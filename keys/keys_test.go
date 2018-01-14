@@ -19,55 +19,64 @@
 package keys
 
 import (
-	"encoding/hex"
 	"testing"
+
+	"github.com/sanscentral/sanswallet/network"
 )
 
 const (
-	testPrivateKeyHex = "3aba4162c7251c891207b747840551a71939b0de081f85c4e44cf7c13e41daa6"
-	testSeedHexA      = "f44e3fc5fc4fbc5e36570bfebade1dcba940260b8c61be1ee2dda8f49cdaabbb09a75a55f4cbbe647b6e85ba9f482e9b18fe28a788af2bec5b76c3a0dc31d53c"
-	testSeedHexB      = "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542"
+	testSeedHexA = "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542"
+	//testSeedHexB = "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542"
 )
 
-func TestPrivateKeyFromBytes(t *testing.T) {
-	pk, err := hex.DecodeString(testPrivateKeyHex)
-	if err != nil {
-		t.Error(err)
-	}
-	if len(pk) != 32 {
-		t.Errorf("Private key is not expected length")
-	}
-
-	kp, err := getKeyPairFromBytes(pk)
+// Test data taken from https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#Test_vector_1
+func TestXMasterKeyA(t *testing.T) {
+	// Generate a new master node from seed (Chain m)
+	key, err := GetExtendedPrivateKeyFromSeedHex(testSeedHexA, network.BTCMainnet)
 	if err != nil {
 		t.Error(err)
 	}
 
-	if kp.D.String() != "26563230048437957592232553826663696440606756685920117476832299673293013768870" {
-		t.Errorf("Unexpected private key in EDCSA pair")
+	if key.String() != "xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U" {
+		t.Errorf("Private key is not expected value")
 	}
 
-	if kp.PublicKey.X.String() != "41637322786646325214887832269588396900663353932545912953362782457239403430124" {
-		t.Errorf("Unexpected X coordinate in keypair")
-	}
-
-	if kp.PublicKey.Y.String() != "16388935128781238405526710466724741593761085120864331449066658622400339362166" {
-		t.Errorf("Unexpected Y coordinate in keypair")
-	}
-}
-
-func TestKeyRetrievalA(t *testing.T) {
-	pk, cc, err := GetKeyAndChainCodeFromSeedHex(testSeedHexA)
+	pubK, err := key.Neuter()
 	if err != nil {
 		t.Error(err)
-		t.Fail()
 	}
 
-	if len(pk.D.Bytes()) != 32 {
-		t.Errorf("Private key is not expected length")
+	if pubK.String() != "xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB" {
+		t.Errorf("Public key is not expected value")
 	}
 
-	if len(cc) != 32 {
-		t.Errorf("Chain code is not expected length")
+	// (Chain m/0)
+	mzero, err := key.Child(0)
+	if err != nil {
+		t.Error(err)
 	}
+
+	if mzero.String() != "xprv9vHkqa6EV4sPZHYqZznhT2NPtPCjKuDKGY38FBWLvgaDx45zo9WQRUT3dKYnjwih2yJD9mkrocEZXo1ex8G81dwSM1fwqWpWkeS3v86pgKt" {
+		t.Errorf("m/0 Private key is not expected value")
+	}
+
+	mzeroPub, err := mzero.Neuter()
+	if err != nil {
+		t.Error(err)
+	}
+
+	if mzeroPub.String() != "xpub69H7F5d8KSRgmmdJg2KhpAK8SR3DjMwAdkxj3ZuxV27CprR9LgpeyGmXUbC6wb7ERfvrnKZjXoUmmDznezpbZb7ap6r1D3tgFxHmwMkQTPH" {
+		t.Errorf("Public key is not expected value")
+	}
+
+	// (Chain m/0/2147483647(H))
+	mz2147483647, err := mzero.Child(HardenedKeyZeroIndex + 2147483647)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if mz2147483647.String() != "xprv9wSp6B7kry3Vj9m1zSnLvN3xH8RdsPP1Mh7fAaR7aRLcQMKTR2vidYEeEg2mUCTAwCd6vnxVrcjfy2kRgVsFawNzmjuHc2YmYRmagcEPdU9" {
+		t.Errorf("m/0/2147483647 Private key is not expected value")
+	}
+
 }

@@ -19,59 +19,36 @@
 package keys
 
 import (
-	"crypto/ecdsa"
 	"encoding/hex"
 	"errors"
-	"math/big"
 
-	"github.com/btcsuite/btcd/btcec"
+	"github.com/sanscentral/sanswallet/network"
+
+	"github.com/btcsuite/btcd/chaincfg"
+	"github.com/btcsuite/btcutil/hdkeychain"
 )
 
-// GetKeyAndChainCodeFromSeedHex returns the private key and chain code using bytes from a decoded hex string
-func GetKeyAndChainCodeFromSeedHex(seed string) (privateKey *ecdsa.PrivateKey, chainCode []byte, err error) {
-	b, err := hex.DecodeString(seed)
+// HardenedKeyZeroIndex is the index where hardended keys start
+const (
+	HardenedKeyZeroIndex = 0x80000000 // 2^31
+)
+
+// GetExtendedPrivateKeyFromSeedHex returns extended private key and chain code using bytes from a decoded hex string
+func GetExtendedPrivateKeyFromSeedHex(seed string, net network.Network) (privateKey *hdkeychain.ExtendedKey, err error) {
+	pk, err := hex.DecodeString(seed)
 	if err != nil {
-		return nil, []byte{}, err
+		return nil, err
 	}
-	return GetKeyAndChainCodeFromSeedBytes(b)
+	n, err := networkToChainCfg(net)
+	return hdkeychain.NewMaster(pk, n)
 }
 
-// GetKeyAndChainCodeFromSeedBytes returns the private key and chain code from bytes
-func GetKeyAndChainCodeFromSeedBytes(seed []byte) (privateKey *ecdsa.PrivateKey, chainCode []byte, err error) {
-	if len(seed) != 64 {
-		return nil, []byte{}, errors.New("Invalid seed length")
+func networkToChainCfg(net network.Network) (*chaincfg.Params, error) {
+	switch net {
+	case network.BTCMainnet:
+		return &chaincfg.MainNetParams, nil
+	case network.BTCTestnet:
+		return &chaincfg.TestNet3Params, nil
 	}
-
-	privateKeyBytes := make([]byte, 32)
-	copy(privateKeyBytes, seed[:32])
-
-	privateKey, err = getKeyPairFromBytes(privateKeyBytes)
-	if err != nil {
-		return nil, []byte{}, errors.New("Invalid seed length")
-	}
-
-	chainCode = make([]byte, 32)
-	copy(chainCode, seed[32:])
-	return
-}
-
-// getKeyPairFromBytes returns a ECDSA keypair using elliptic curve secp256k1 (koblitz)
-func getKeyPairFromBytes(prikb []byte) (*ecdsa.PrivateKey, error) {
-	if len(prikb) <= 0 {
-		return nil, errors.New("bad bytes for key")
-	}
-
-	curve := btcec.S256()
-	p := new(ecdsa.PrivateKey)
-	p.PublicKey.Curve = curve
-	n := big.NewInt(0)
-	n.SetBytes(prikb)
-
-	if n.String() == "0" {
-		return nil, errors.New("failed to set bytes in keypair")
-	}
-
-	p.D = n
-	p.PublicKey.X, p.PublicKey.Y = curve.ScalarBaseMult(prikb)
-	return p, nil
+	return nil, errors.New("Unknown network specified")
 }

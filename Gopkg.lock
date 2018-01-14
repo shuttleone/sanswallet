@@ -4,12 +4,24 @@
 [[projects]]
   branch = "master"
   name = "github.com/btcsuite/btcd"
-  packages = ["btcec"]
+  packages = ["btcec","chaincfg","chaincfg/chainhash","wire"]
   revision = "2e60448ffcc6bf78332d1fe590260095f554dd78"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/btcsuite/btcutil"
+  packages = [".","base58","bech32","hdkeychain"]
+  revision = "501929d3d046174c3d39f0ea54ece471aa17238c"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["ripemd160"]
+  revision = "13931e22f9e72ea58bb73048bc752b48c6d4d4ac"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1aec4ab3bd83cfa9b46605a35267545c0aef54730c4f381485dcd0d637c1c167"
+  inputs-digest = "2e067c0180ca922c8eaf6373f79cda3e447538891176e0a33c04c229c158e2dc"
   solver-name = "gps-cdcl"
   solver-version = 1
