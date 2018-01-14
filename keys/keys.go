@@ -28,19 +28,66 @@ import (
 	"github.com/btcsuite/btcutil/hdkeychain"
 )
 
+// AddressType used in BIP44
+type AddressType uint32
+
 // HardenedKeyZeroIndex is the index where hardended keys start
 const (
 	HardenedKeyZeroIndex = 0x80000000 // 2^31
+
+	// BIP43PurposeConstant is to-be hardened purpose (Full list of coin types available here: https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
+	BIP43PurposeConstant = 44
+
+	// BTCCoinType is to-be hardened BIP44 Bitcoin coin type
+	BTCCoinType = 0
+
+	ExternalAddress AddressType = 0
+	ChangeAddress   AddressType = 1
 )
 
-// GetExtendedPrivateKeyFromSeedHex returns extended private key and chain code using bytes from a decoded hex string
-func GetExtendedPrivateKeyFromSeedHex(seed string, net network.Network) (privateKey *hdkeychain.ExtendedKey, err error) {
+// GetExtendedMasterPrivateKeyFromSeedHex returns extended master private key using bytes from a decoded hex string
+func GetExtendedMasterPrivateKeyFromSeedHex(seed string, net network.Network) (privateKey *hdkeychain.ExtendedKey, err error) {
 	pk, err := hex.DecodeString(seed)
 	if err != nil {
 		return nil, err
 	}
+	return GetExtendedMasterPrivateKeyFromSeedBytes(pk, net)
+}
+
+// GetExtendedMasterPrivateKeyFromSeedBytes returns extended master private key from bytes
+func GetExtendedMasterPrivateKeyFromSeedBytes(seed []byte, net network.Network) (privateKey *hdkeychain.ExtendedKey, err error) {
 	n, err := networkToChainCfg(net)
-	return hdkeychain.NewMaster(pk, n)
+	return hdkeychain.NewMaster(seed, n)
+}
+
+// GetBTCAccountKey retreives bitcoin address key for BIP32 path using BIP44 standard (m / purpose' / coin_type' / account' / change / address_index)
+func GetBTCAccountKey(masterKey *hdkeychain.ExtendedKey, accountIndex uint32, change AddressType, addressIndex uint32) (key *hdkeychain.ExtendedKey, err error) {
+	purpose, err := masterKey.Child(HardenedKeyZeroIndex + BIP43PurposeConstant)
+	if err != nil {
+		return nil, err
+	}
+
+	coinType, err := purpose.Child(HardenedKeyZeroIndex + BTCCoinType)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := coinType.Child(HardenedKeyZeroIndex + accountIndex)
+	if err != nil {
+		return nil, err
+	}
+
+	changeK, err := account.Child(uint32(change))
+	if err != nil {
+		return nil, err
+	}
+
+	key, err = changeK.Child(addressIndex)
+	if err != nil {
+		return nil, err
+	}
+
+	return
 }
 
 func networkToChainCfg(net network.Network) (*chaincfg.Params, error) {

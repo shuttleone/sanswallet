@@ -25,14 +25,13 @@ import (
 )
 
 const (
+	// Test vector ref: https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#Test_vector_2
 	testSeedHexA = "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542"
-	//testSeedHexB = "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542"
 )
 
-// Test data taken from https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#Test_vector_1
-func TestXMasterKeyA(t *testing.T) {
-	// Generate a new master node from seed (Chain m)
-	key, err := GetExtendedPrivateKeyFromSeedHex(testSeedHexA, network.BTCMainnet)
+func TestExtendedKeyChildren(t *testing.T) {
+	// (Chain m) Master from seed
+	key, err := GetExtendedMasterPrivateKeyFromSeedHex(testSeedHexA, network.BTCMainnet)
 	if err != nil {
 		t.Error(err)
 	}
@@ -77,6 +76,45 @@ func TestXMasterKeyA(t *testing.T) {
 
 	if mz2147483647.String() != "xprv9wSp6B7kry3Vj9m1zSnLvN3xH8RdsPP1Mh7fAaR7aRLcQMKTR2vidYEeEg2mUCTAwCd6vnxVrcjfy2kRgVsFawNzmjuHc2YmYRmagcEPdU9" {
 		t.Errorf("m/0/2147483647 Private key is not expected value")
+	}
+
+	// (Chain m/0/2147483647(H)/1)
+	mz21474836471, err := mz2147483647.Child(1)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if mz21474836471.String() != "xprv9zFnWC6h2cLgpmSA46vutJzBcfJ8yaJGg8cX1e5StJh45BBciYTRXSd25UEPVuesF9yog62tGAQtHjXajPPdbRCHuWS6T8XA2ECKADdw4Ef" {
+		t.Errorf("m/0/2147483647(H)/1 Private key is not expected value")
+	}
+
+	// (Chain m/0/2147483647(H)/1/2147483646(H)
+	mz214748364712147483646, err := mz21474836471.Child(HardenedKeyZeroIndex + 2147483646)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if mz214748364712147483646.String() != "xprvA1RpRA33e1JQ7ifknakTFpgNXPmW2YvmhqLQYMmrj4xJXXWYpDPS3xz7iAxn8L39njGVyuoseXzU6rcxFLJ8HFsTjSyQbLYnMpCqE2VbFWc" {
+		t.Errorf("m/0/2147483647(H)/1 Private key is not expected value")
+	}
+
+	// (Chain m/0/2147483647H/1/2147483646H/2)
+	mz2147483647121474836462, err := mz214748364712147483646.Child(2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if mz2147483647121474836462.String() != "xprvA2nrNbFZABcdryreWet9Ea4LvTJcGsqrMzxHx98MMrotbir7yrKCEXw7nadnHM8Dq38EGfSh6dqA9QWTyefMLEcBYJUuekgW4BYPJcr9E7j" {
+		t.Errorf("m/0/2147483647(H)/1 Private key is not expected value")
+	}
+
+	pubKEndOfChain, err := mz2147483647121474836462.Neuter()
+	if err != nil {
+		t.Error(err)
+	}
+
+	if pubKEndOfChain.String() != "xpub6FnCn6nSzZAw5Tw7cgR9bi15UV96gLZhjDstkXXxvCLsUXBGXPdSnLFbdpq8p9HmGsApME5hQTZ3emM2rnY5agb9rXpVGyy3bdW6EEgAtqt" {
+		t.Errorf("Public key is not expected value")
 	}
 
 }
