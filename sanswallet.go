@@ -19,6 +19,9 @@
 package sanswallet
 
 import (
+	"github.com/btcsuite/btcd/chaincfg"
+	"github.com/btcsuite/btcd/txscript"
+	"github.com/btcsuite/btcutil"
 	"github.com/btcsuite/btcutil/hdkeychain"
 
 	"github.com/sanscentral/sanswallet/keys"
@@ -27,26 +30,11 @@ import (
 
 // Keychain represents a managed key store
 type Keychain struct {
-	master   *hdkeychain.ExtendedKey
-	accounts []Account
+	master *hdkeychain.ExtendedKey
 }
 
-// Account is a BIP44 'account' as defined through a BIP32 path (m / purpose' / coin_type' / --->account'<--- / change / address_index)
-type Account struct {
-	publicExtended *hdkeychain.ExtendedKey
-	index          uint32
-	address        []Address
-}
-
-// Address is a used address with given BIP32 address index
-type Address struct {
-	index    uint32
-	isChange bool
-	used     bool
-}
-
-// NewKeychainFromSeed creates a new keychain (acts as seed restore using 'Account discovery' as per BIP44)
-func NewKeychainFromSeed(seed []byte) (Keychain, error) {
+// KeychainFromSeed creates a new keychain (acts as seed restore using 'Account discovery' as per BIP44)
+func keychainFromSeed(seed []byte) (Keychain, error) {
 	n := Keychain{}
 	var err error
 	n.master, err = keys.GetExtendedMasterPrivateKeyFromSeedBytes(seed, network.BTCMainnet)
@@ -54,29 +42,126 @@ func NewKeychainFromSeed(seed []byte) (Keychain, error) {
 		return Keychain{}, err
 	}
 
-	// Perform recovery (Check with network as to accounts used)
-
-	n.storeMasterKey()
-	n.master.Zero()
 	return n, nil
 }
 
-// storeMasterKey securely store the user's master key
-func (k *Keychain) storeMasterKey() {
+// GetXPrivForSeed returns extended PRIVATE key from seed
+func GetXPrivForSeed(seed []byte) (string, error) {
+	m, err := keychainFromSeed(seed)
+	if err != nil {
+		return "", err
+	}
 
+	return m.master.String(), nil
 }
 
-// readMasterKey read the user's master key from secure location (adding additional account / new cointype)
-func (k *Keychain) readMasterKey() {
+// GetXPubForSeed returns extended PUBLIC key from seed
+func GetXPubForSeed(seed []byte) (string, error) {
+	m, err := keychainFromSeed(seed)
+	if err != nil {
+		return "", err
+	}
 
+	pub, err := m.master.Neuter()
+	if err != nil {
+		return "", err
+	}
+
+	return pub.String(), nil
 }
 
-// Serialize Keychain for storage
-func (k *Keychain) Serialize() {
+// GetP2WPKHAddressForAccountAtIndex returns segwit bech32 address for BTC account at given index
+// P2WPKH pay-to-witness-public-key-hash is the shorter segwit form of P2PKH (newest address format at time of writing)
+func GetP2WPKHAddressForAccountAtIndex(seed []byte, account, index uint32) (string, error) {
+	m, err := keychainFromSeed(seed)
+	if err != nil {
+		return "", err
+	}
 
+	k, err := keys.GetBTCAccountKey(m.master, account, keys.ExternalAddress, index)
+	if err != nil {
+		return "", err
+	}
+
+	pk, err := k.ECPubKey()
+	if err != nil {
+		return "", err
+	}
+
+	keyHash := btcutil.Hash160(pk.SerializeCompressed())
+	segAddr, err := btcutil.NewAddressWitnessPubKeyHash(keyHash, &chaincfg.MainNetParams)
+	if err != nil {
+		return "", err
+	}
+
+	return segAddr.EncodeAddress(), nil
 }
 
-// Deserialize keychain from storage
-func (k *Keychain) Deserialize() {
+// GetP2SHAddressForAccountAtIndex returns address for BTC account at given index
+// P2SH ('3' prefixed addresses) pay-to-script-hash includes P2SH-wrapped segwit outputs
+func GetP2SHAddressForAccountAtIndex(seed []byte, account, index uint32) (string, error) {
+	m, err := keychainFromSeed(seed)
+	if err != nil {
+		return "", err
+	}
 
+	k, err := keys.GetBTCAccountKey(m.master, account, keys.ExternalAddress, index)
+	if err != nil {
+		return "", err
+	}
+
+	pk, err := k.ECPubKey()
+	if err != nil {
+		return "", err
+	}
+	keyHash := btcutil.Hash160(pk.SerializeCompressed())
+	scriptSig, err := txscript.NewScriptBuilder().AddOp(txscript.OP_0).AddData(keyHash).Script()
+	if err != nil {
+		return "", err
+	}
+	segAddr, err := btcutil.NewAddressScriptHash(scriptSig, &chaincfg.MainNetParams)
+	if err != nil {
+		return "", err
+	}
+	return segAddr.EncodeAddress(), nil
+}
+
+// GetP2PKHAddressForAccountAtIndex returns address for BTC account at given index
+// P2PK ('1' prefixed addresses) origional pay-to-public-key
+func GetP2PKHAddressForAccountAtIndex(seed []byte, account, index uint32) (string, error) {
+	m, err := keychainFromSeed(seed)
+	if err != nil {
+		return "", err
+	}
+
+	k, err := keys.GetBTCAccountKey(m.master, account, keys.ExternalAddress, index)
+	if err != nil {
+		return "", err
+	}
+
+	a, err := k.Address(&chaincfg.MainNetParams)
+	if err != nil {
+		return "", err
+	}
+
+	return a.EncodeAddress(), nil
+}
+
+// GetChangeAddressForAccountAtIndex returns the change address for BTC account at given index
+func GetChangeAddressForAccountAtIndex(seed []byte, account, index uint32) (string, error) {
+	m, err := keychainFromSeed(seed)
+	if err != nil {
+		return "", err
+	}
+
+	k, err := keys.GetBTCAccountKey(m.master, account, keys.ChangeAddress, index)
+	if err != nil {
+		return "", err
+	}
+
+	a, err := k.Address(&chaincfg.MainNetParams)
+	if err != nil {
+		return "", err
+	}
+	return a.EncodeAddress(), nil
 }

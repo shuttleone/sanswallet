@@ -4,8 +4,14 @@
 [[projects]]
   branch = "master"
   name = "github.com/btcsuite/btcd"
-  packages = ["btcec","chaincfg","chaincfg/chainhash","wire"]
+  packages = ["btcec","chaincfg","chaincfg/chainhash","txscript","wire"]
   revision = "2e60448ffcc6bf78332d1fe590260095f554dd78"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/btcsuite/btclog"
+  packages = ["."]
+  revision = "84c8d2346e9fc8c7b947e243b9c24e6df9fd206a"
 
 [[projects]]
   branch = "master"
@@ -19,9 +25,15 @@
   packages = ["ripemd160"]
   revision = "13931e22f9e72ea58bb73048bc752b48c6d4d4ac"
 
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/mobile"
+  packages = ["bind","cmd/gomobile","internal/binres","internal/importers","internal/importers/java","internal/importers/objc"]
+  revision = "02851653b1d78a8a90888267945c797491e94a82"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2e067c0180ca922c8eaf6373f79cda3e447538891176e0a33c04c229c158e2dc"
+  inputs-digest = "3e317569185bfbd6398faf1034d5d460f7b851c79d9cb2c7f677af57f654d719"
   solver-name = "gps-cdcl"
   solver-version = 1
