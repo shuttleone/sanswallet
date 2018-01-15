@@ -49,8 +49,14 @@ func GetXPubKeyForAccount(seed []byte, accountIndex uint32) (string, error) {
 
 // GetP2WPKHAddressForIndex returns segwit bech32 address for BTC account extended key at given index
 // P2WPKH pay-to-witness-public-key-hash is the shorter segwit form of P2PKH (newest address format at time of writing)
-func GetP2WPKHAddressForIndex(accountKey string, index uint32) (string, error) {
-	k, err := keys.GetBTCAccountAddressKey(accountKey, keys.ExternalAddress, index)
+func GetP2WPKHAddressForIndex(accountKey string, index uint32, isChange bool) (string, error) {
+
+	addt := keys.ExternalAddress
+	if isChange {
+		addt = keys.ChangeAddress
+	}
+
+	k, err := keys.GetBTCAccountAddressKey(accountKey, addt, index)
 	if err != nil {
 		return "", err
 	}
@@ -71,8 +77,13 @@ func GetP2WPKHAddressForIndex(accountKey string, index uint32) (string, error) {
 
 // GetP2SHAddressForIndex returns address for BTC account at given index
 // P2SH ('3' prefixed addresses) pay-to-script-hash includes P2SH-wrapped segwit outputs
-func GetP2SHAddressForIndex(accountKey string, index uint32) (string, error) {
-	k, err := keys.GetBTCAccountAddressKey(accountKey, keys.ExternalAddress, index)
+func GetP2SHAddressForIndex(accountKey string, index uint32, isChange bool) (string, error) {
+	addt := keys.ExternalAddress
+	if isChange {
+		addt = keys.ChangeAddress
+	}
+
+	k, err := keys.GetBTCAccountAddressKey(accountKey, addt, index)
 	if err != nil {
 		return "", err
 	}
@@ -95,8 +106,13 @@ func GetP2SHAddressForIndex(accountKey string, index uint32) (string, error) {
 
 // GetP2PKHAddressForIndex returns address for BTC account at given index
 // P2PK ('1' prefixed addresses) origional pay-to-public-key
-func GetP2PKHAddressForIndex(accountKey string, index uint32) (string, error) {
-	k, err := keys.GetBTCAccountAddressKey(accountKey, keys.ExternalAddress, index)
+func GetP2PKHAddressForIndex(accountKey string, index uint32, isChange bool) (string, error) {
+	addt := keys.ExternalAddress
+	if isChange {
+		addt = keys.ChangeAddress
+	}
+
+	k, err := keys.GetBTCAccountAddressKey(accountKey, addt, index)
 	if err != nil {
 		return "", err
 	}
