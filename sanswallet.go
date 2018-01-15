@@ -28,8 +28,13 @@ import (
 )
 
 // GetXPrivForAccount returns extended private key for given account index
-func GetXPrivForAccount(seed []byte, accountIndex uint32) (string, error) {
-	m, err := keys.GetExtendedMasterPrivateKeyFromSeedBytes(seed, network.BTCMainnet)
+func GetXPrivForAccount(seed []byte, accountIndex uint32, testnet bool) (string, error) {
+	net := network.BTCMainnet
+	if testnet {
+		net = network.BTCTestnet
+	}
+
+	m, err := keys.GetExtendedMasterPrivateKeyFromSeedBytes(seed, net)
 	if err != nil {
 		return "", err
 	}
@@ -38,8 +43,13 @@ func GetXPrivForAccount(seed []byte, accountIndex uint32) (string, error) {
 }
 
 // GetXPubKeyForAccount returns extended public key for given account index
-func GetXPubKeyForAccount(seed []byte, accountIndex uint32) (string, error) {
-	m, err := keys.GetExtendedMasterPrivateKeyFromSeedBytes(seed, network.BTCMainnet)
+func GetXPubKeyForAccount(seed []byte, accountIndex uint32, testnet bool) (string, error) {
+	net := network.BTCMainnet
+	if testnet {
+		net = network.BTCTestnet
+	}
+
+	m, err := keys.GetExtendedMasterPrivateKeyFromSeedBytes(seed, net)
 	if err != nil {
 		return "", err
 	}
@@ -49,7 +59,7 @@ func GetXPubKeyForAccount(seed []byte, accountIndex uint32) (string, error) {
 
 // GetP2WPKHAddressForIndex returns segwit bech32 address for BTC account extended key at given index
 // P2WPKH pay-to-witness-public-key-hash is the shorter segwit form of P2PKH (newest address format at time of writing)
-func GetP2WPKHAddressForIndex(accountKey string, index uint32, isChange bool) (string, error) {
+func GetP2WPKHAddressForIndex(accountKey string, index uint32, isChange bool, testnet bool) (string, error) {
 
 	addt := keys.ExternalAddress
 	if isChange {
@@ -67,7 +77,13 @@ func GetP2WPKHAddressForIndex(accountKey string, index uint32, isChange bool) (s
 	}
 
 	keyHash := btcutil.Hash160(pk.SerializeCompressed())
-	segAddr, err := btcutil.NewAddressWitnessPubKeyHash(keyHash, &chaincfg.MainNetParams)
+
+	netParam := &chaincfg.MainNetParams
+	if testnet {
+		netParam = &chaincfg.TestNet3Params
+	}
+
+	segAddr, err := btcutil.NewAddressWitnessPubKeyHash(keyHash, netParam)
 	if err != nil {
 		return "", err
 	}
@@ -77,7 +93,7 @@ func GetP2WPKHAddressForIndex(accountKey string, index uint32, isChange bool) (s
 
 // GetP2SHAddressForIndex returns address for BTC account at given index
 // P2SH ('3' prefixed addresses) pay-to-script-hash includes P2SH-wrapped segwit outputs
-func GetP2SHAddressForIndex(accountKey string, index uint32, isChange bool) (string, error) {
+func GetP2SHAddressForIndex(accountKey string, index uint32, isChange bool, testnet bool) (string, error) {
 	addt := keys.ExternalAddress
 	if isChange {
 		addt = keys.ChangeAddress
@@ -92,12 +108,19 @@ func GetP2SHAddressForIndex(accountKey string, index uint32, isChange bool) (str
 	if err != nil {
 		return "", err
 	}
+
 	keyHash := btcutil.Hash160(pk.SerializeCompressed())
 	scriptSig, err := txscript.NewScriptBuilder().AddOp(txscript.OP_0).AddData(keyHash).Script()
 	if err != nil {
 		return "", err
 	}
-	segAddr, err := btcutil.NewAddressScriptHash(scriptSig, &chaincfg.MainNetParams)
+
+	netParam := &chaincfg.MainNetParams
+	if testnet {
+		netParam = &chaincfg.TestNet3Params
+	}
+
+	segAddr, err := btcutil.NewAddressScriptHash(scriptSig, netParam)
 	if err != nil {
 		return "", err
 	}
@@ -106,7 +129,7 @@ func GetP2SHAddressForIndex(accountKey string, index uint32, isChange bool) (str
 
 // GetP2PKHAddressForIndex returns address for BTC account at given index
 // P2PK ('1' prefixed addresses) origional pay-to-public-key
-func GetP2PKHAddressForIndex(accountKey string, index uint32, isChange bool) (string, error) {
+func GetP2PKHAddressForIndex(accountKey string, index uint32, isChange bool, testnet bool) (string, error) {
 	addt := keys.ExternalAddress
 	if isChange {
 		addt = keys.ChangeAddress
@@ -117,7 +140,12 @@ func GetP2PKHAddressForIndex(accountKey string, index uint32, isChange bool) (st
 		return "", err
 	}
 
-	a, err := k.Address(&chaincfg.MainNetParams)
+	netParam := &chaincfg.MainNetParams
+	if testnet {
+		netParam = &chaincfg.TestNet3Params
+	}
+
+	a, err := k.Address(netParam)
 	if err != nil {
 		return "", err
 	}

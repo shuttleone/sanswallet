@@ -48,6 +48,7 @@ const (
 	testPublicKey  = "xpub6DAiPJAHXi5oZE6cXrSgsWdMGKtHW6wCaWsGuYL1Wx9qMtRgJn2VekPQeZc1WwAoeuoytGozkCQnToL2PMw4deyhWGEu7Xou6gPYc1KqYuj"
 
 	testIsChangeAddress = false
+	testIsTestnet       = false
 )
 
 func TestKeyExport(t *testing.T) {
@@ -56,7 +57,7 @@ func TestKeyExport(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	priv, err := GetXPrivForAccount(seed, 0)
+	priv, err := GetXPrivForAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -65,7 +66,7 @@ func TestKeyExport(t *testing.T) {
 		t.Errorf("test extended private key export is not expected value want %s got %s", testPrivateKey, priv)
 	}
 
-	pub, err := GetXPubKeyForAccount(seed, 0)
+	pub, err := GetXPubKeyForAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -81,12 +82,12 @@ func TestP2WPKHAddressGeneration(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	pk, err := GetXPrivForAccount(seed, 0)
+	pk, err := GetXPrivForAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
 
-	address0, err := GetP2WPKHAddressForIndex(pk, 0, testIsChangeAddress)
+	address0, err := GetP2WPKHAddressForIndex(pk, 0, testIsChangeAddress, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -95,7 +96,7 @@ func TestP2WPKHAddressGeneration(t *testing.T) {
 		t.Errorf("test P2WPK address 0 is not expected value want %s got %s", testP2WPKH0, address0)
 	}
 
-	address1, err := GetP2WPKHAddressForIndex(pk, 1, testIsChangeAddress)
+	address1, err := GetP2WPKHAddressForIndex(pk, 1, testIsChangeAddress, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -104,7 +105,7 @@ func TestP2WPKHAddressGeneration(t *testing.T) {
 		t.Errorf("test P2WPK address 1 is not expected value want %s got %s", testP2WPKH1, address1)
 	}
 
-	address10, err := GetP2WPKHAddressForIndex(pk, 10, testIsChangeAddress)
+	address10, err := GetP2WPKHAddressForIndex(pk, 10, testIsChangeAddress, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -120,12 +121,12 @@ func TestP2SHAddressGeneration(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	pk, err := GetXPrivForAccount(seed, 0)
+	pk, err := GetXPrivForAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
 
-	address0, err := GetP2SHAddressForIndex(pk, 0, testIsChangeAddress)
+	address0, err := GetP2SHAddressForIndex(pk, 0, testIsChangeAddress, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -134,7 +135,7 @@ func TestP2SHAddressGeneration(t *testing.T) {
 		t.Errorf("test P2SH address 0 is not expected value want %s got %s", testP2SH0, address0)
 	}
 
-	address1, err := GetP2SHAddressForIndex(pk, 1, testIsChangeAddress)
+	address1, err := GetP2SHAddressForIndex(pk, 1, testIsChangeAddress, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -143,7 +144,7 @@ func TestP2SHAddressGeneration(t *testing.T) {
 		t.Errorf("test P2SH address 1 is not expected value want %s got %s", testP2SH1, address1)
 	}
 
-	address10, err := GetP2SHAddressForIndex(pk, 10, testIsChangeAddress)
+	address10, err := GetP2SHAddressForIndex(pk, 10, testIsChangeAddress, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -159,12 +160,12 @@ func TestP2PKHAddressGeneration(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	pk, err := GetXPrivForAccount(seed, 0)
+	pk, err := GetXPrivForAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
 
-	address0, err := GetP2PKHAddressForIndex(pk, 0, testIsChangeAddress)
+	address0, err := GetP2PKHAddressForIndex(pk, 0, testIsChangeAddress, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -173,7 +174,7 @@ func TestP2PKHAddressGeneration(t *testing.T) {
 		t.Errorf("test P2PKH address 0 is not expected value want %s got %s", testP2PK0, address0)
 	}
 
-	address1, err := GetP2PKHAddressForIndex(pk, 1, testIsChangeAddress)
+	address1, err := GetP2PKHAddressForIndex(pk, 1, testIsChangeAddress, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -182,7 +183,7 @@ func TestP2PKHAddressGeneration(t *testing.T) {
 		t.Errorf("test P2PKH address 1 is not expected value want %s got %s", testP2PK1, address1)
 	}
 
-	address10, err := GetP2PKHAddressForIndex(pk, 10, testIsChangeAddress)
+	address10, err := GetP2PKHAddressForIndex(pk, 10, testIsChangeAddress, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
