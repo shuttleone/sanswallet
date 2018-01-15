@@ -28,7 +28,12 @@ import (
 )
 
 // GetXPrivForAccount returns extended private key for given account index
-func GetXPrivForAccount(seed []byte, accountIndex uint32, testnet bool) (string, error) {
+func GetXPrivForAccount(seed []byte, accountIndex int, testnet bool) (string, error) {
+	index, err := intToUint32(accountIndex)
+	if err != nil {
+		return "", err
+	}
+
 	net := network.BTCMainnet
 	if testnet {
 		net = network.BTCTestnet
@@ -39,11 +44,16 @@ func GetXPrivForAccount(seed []byte, accountIndex uint32, testnet bool) (string,
 		return "", err
 	}
 
-	return keys.GetBTCAccountKey(m, accountIndex, true)
+	return keys.GetBTCAccountKey(m, index, true)
 }
 
 // GetXPubKeyForAccount returns extended public key for given account index
-func GetXPubKeyForAccount(seed []byte, accountIndex uint32, testnet bool) (string, error) {
+func GetXPubKeyForAccount(seed []byte, accountIndex int, testnet bool) (string, error) {
+	index, err := intToUint32(accountIndex)
+	if err != nil {
+		return "", err
+	}
+
 	net := network.BTCMainnet
 	if testnet {
 		net = network.BTCTestnet
@@ -54,12 +64,16 @@ func GetXPubKeyForAccount(seed []byte, accountIndex uint32, testnet bool) (strin
 		return "", err
 	}
 
-	return keys.GetBTCAccountKey(m, accountIndex, false)
+	return keys.GetBTCAccountKey(m, index, false)
 }
 
 // GetP2WPKHAddressForIndex returns segwit bech32 address for BTC account extended key at given index
 // P2WPKH pay-to-witness-public-key-hash is the shorter segwit form of P2PKH (newest address format at time of writing)
-func GetP2WPKHAddressForIndex(accountKey string, index uint32, isChange bool, testnet bool) (string, error) {
+func GetP2WPKHAddressForIndex(accountKey string, addressIndex int, isChange bool, testnet bool) (string, error) {
+	index, err := intToUint32(addressIndex)
+	if err != nil {
+		return "", err
+	}
 
 	addt := keys.ExternalAddress
 	if isChange {
@@ -93,7 +107,12 @@ func GetP2WPKHAddressForIndex(accountKey string, index uint32, isChange bool, te
 
 // GetP2SHAddressForIndex returns address for BTC account at given index
 // P2SH ('3' prefixed addresses) pay-to-script-hash includes P2SH-wrapped segwit outputs
-func GetP2SHAddressForIndex(accountKey string, index uint32, isChange bool, testnet bool) (string, error) {
+func GetP2SHAddressForIndex(accountKey string, addressIndex int, isChange bool, testnet bool) (string, error) {
+	index, err := intToUint32(addressIndex)
+	if err != nil {
+		return "", err
+	}
+
 	addt := keys.ExternalAddress
 	if isChange {
 		addt = keys.ChangeAddress
@@ -129,7 +148,12 @@ func GetP2SHAddressForIndex(accountKey string, index uint32, isChange bool, test
 
 // GetP2PKHAddressForIndex returns address for BTC account at given index
 // P2PK ('1' prefixed addresses) origional pay-to-public-key
-func GetP2PKHAddressForIndex(accountKey string, index uint32, isChange bool, testnet bool) (string, error) {
+func GetP2PKHAddressForIndex(accountKey string, addressIndex int, isChange bool, testnet bool) (string, error) {
+	index, err := intToUint32(addressIndex)
+	if err != nil {
+		return "", err
+	}
+
 	addt := keys.ExternalAddress
 	if isChange {
 		addt = keys.ChangeAddress
