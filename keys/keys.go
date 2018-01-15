@@ -60,19 +60,43 @@ func GetExtendedMasterPrivateKeyFromSeedBytes(seed []byte, net network.Network) 
 	return hdkeychain.NewMaster(seed, n)
 }
 
-// GetBTCAccountKey retreives bitcoin address key for BIP32 path using BIP44 standard (m / purpose' / coin_type' / account' / change / address_index)
-func GetBTCAccountKey(masterKey *hdkeychain.ExtendedKey, accountIndex uint32, change AddressType, addressIndex uint32) (key *hdkeychain.ExtendedKey, err error) {
+// GetExtendedKeyFromString returns a new extended key from a base58-encoded extended key
+func GetExtendedKeyFromString(xKey string) (key *hdkeychain.ExtendedKey, err error) {
+	return hdkeychain.NewKeyFromString(xKey)
+}
+
+// GetBTCAccountKey retreives bitcoin account key for BIP32 path using BIP44 standard (m / purpose' / coin_type' / --->account'<--- / change / address_index)
+func GetBTCAccountKey(masterKey *hdkeychain.ExtendedKey, accountIndex uint32, includePrivateKey bool) (key string, err error) {
 	purpose, err := masterKey.Child(HardenedKeyZeroIndex + BIP43PurposeConstant)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	coinType, err := purpose.Child(HardenedKeyZeroIndex + BTCCoinType)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	account, err := coinType.Child(HardenedKeyZeroIndex + accountIndex)
+	r, err := coinType.Child(HardenedKeyZeroIndex + accountIndex)
+	if err != nil {
+		return "", err
+	}
+
+	if includePrivateKey {
+		return r.String(), nil
+	}
+
+	pub, err := r.Neuter()
+	if err != nil {
+		return "", err
+	}
+
+	return pub.String(), nil
+}
+
+// GetBTCAccountAddressKey retreives bitcoin account key for BIP32 path using BIP44 standard (m / purpose' / coin_type' / account' / --->change / address_index <---)
+func GetBTCAccountAddressKey(xKey string, change AddressType, addressIndex uint32) (key *hdkeychain.ExtendedKey, err error) {
+	account, err := GetExtendedKeyFromString(xKey)
 	if err != nil {
 		return nil, err
 	}
@@ -82,12 +106,7 @@ func GetBTCAccountKey(masterKey *hdkeychain.ExtendedKey, accountIndex uint32, ch
 		return nil, err
 	}
 
-	key, err = changeK.Child(addressIndex)
-	if err != nil {
-		return nil, err
-	}
-
-	return
+	return changeK.Child(addressIndex)
 }
 
 func networkToChainCfg(net network.Network) (*chaincfg.Params, error) {
