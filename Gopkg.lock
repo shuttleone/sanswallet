@@ -3,6 +3,18 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/alecthomas/template"
+  packages = [".","parse"]
+  revision = "a0175ee3bccc567396460bf5acd36800cb10c49c"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/alecthomas/units"
+  packages = ["."]
+  revision = "2efee857e7cfd4f3d0138cc3cbb1b4966962b93a"
+
+[[projects]]
+  branch = "master"
   name = "github.com/btcsuite/btcd"
   packages = ["btcec","chaincfg","chaincfg/chainhash","txscript","wire"]
   revision = "2e60448ffcc6bf78332d1fe590260095f554dd78"
@@ -32,9 +44,15 @@
   packages = ["bind","cmd/gomobile","internal/binres","internal/importers","internal/importers/java","internal/importers/objc"]
   revision = "02851653b1d78a8a90888267945c797491e94a82"
 
+[[projects]]
+  name = "gopkg.in/alecthomas/kingpin.v2"
+  packages = ["."]
+  revision = "947dcec5ba9c011838740e680966fd7087a71d0d"
+  version = "v2.2.6"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "af531cf62854b10364eba5bbbb4fe02997108f98a9150208992d1d0a2da2c230"
+  inputs-digest = "ce2f0d301a1e1f711442781c0605aa80127833023650a068fec40992c6065fae"
   solver-name = "gps-cdcl"
   solver-version = 1
