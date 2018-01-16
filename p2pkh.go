@@ -1,5 +1,5 @@
 /*
-	SansSeed is a BIP39 compatible implementation for generating mnemonic phrases and seed derivation
+	SansWallet is a BIP32, BIP44, BIP49 and BIP84 compatible hierarchical determinstic wallet
 	Copyright (C) 2018  Sans Central
 
 	This program is free software: you can redistribute it and/or modify

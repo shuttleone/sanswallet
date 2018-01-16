@@ -1,5 +1,5 @@
 /*
-	SansWallet is a golang library implementation of a BIP32 & BIP44 hierarchical determinstic wallet
+	SansWallet is a BIP32, BIP44, BIP49 and BIP84 compatible hierarchical determinstic wallet
 	Copyright (C) 2018  Sans Central
 
 	This program is free software: you can redistribute it and/or modify
