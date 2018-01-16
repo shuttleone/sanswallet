@@ -17,7 +17,8 @@
   branch = "master"
   name = "github.com/btcsuite/btcutil"
   packages = [".","base58","bech32","hdkeychain"]
-  revision = "501929d3d046174c3d39f0ea54ece471aa17238c"
+  revision = "8f0227d09645f436abf2a477a893a02925ee77fb"
+  source = "github.com/SansCentralDev/btcutil.git"
 
 [[projects]]
   branch = "master"
@@ -34,6 +35,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3e317569185bfbd6398faf1034d5d460f7b851c79d9cb2c7f677af57f654d719"
+  inputs-digest = "af531cf62854b10364eba5bbbb4fe02997108f98a9150208992d1d0a2da2c230"
   solver-name = "gps-cdcl"
   solver-version = 1
