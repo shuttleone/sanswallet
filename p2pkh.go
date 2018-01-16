@@ -1,6 +1,6 @@
 /*
 	SansWallet is a BIP32, BIP44, BIP49 and BIP84 compatible hierarchical determinstic wallet
-	Copyright (C) 2018  Sans Central
+	Copyright (C) 2018 Sans Central
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,7 @@ import (
 
 var (
 	// possible prefixes for a P2PKH key (Used for key validation)
-	p2pkhHumanPre = map[string]bool{"xpub": true, "xprv": true}
+	p2pkhHumanPre = map[string]bool{"xpub": true, "xprv": true, "tpub": true, "tprv": true}
 )
 
 // GetExtPrvForP2PKHAccount returns extended private key for BIP44 P2PKH account
