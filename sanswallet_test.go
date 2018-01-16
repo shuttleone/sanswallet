@@ -62,7 +62,7 @@ func TestP2PKHKeyExport(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	priv, err := GetXPrivForP2PKHAccount(seed, 0, testIsTestnet)
+	priv, err := GetExtPrvForP2PKHAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -71,7 +71,7 @@ func TestP2PKHKeyExport(t *testing.T) {
 		t.Errorf("test extended P2PKH private key export is not expected value want\n%s \ngot \n%s", testP2PKHPriv, priv)
 	}
 
-	pub, err := GetXPubForP2PKHAccount(seed, 0, testIsTestnet)
+	pub, err := GetExtPubForP2PKHAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -87,7 +87,7 @@ func TestP2SHKeyExport(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	priv, err := GetXPrivForP2SHAccount(seed, 0, testIsTestnet)
+	priv, err := GetExtPrvForP2SHAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -96,7 +96,7 @@ func TestP2SHKeyExport(t *testing.T) {
 		t.Errorf("test extended P2SH private key export is not expected value want\n%s \ngot \n%s", testP2SHPriv, priv)
 	}
 
-	pub, err := GetXPubForP2SHAccount(seed, 0, testIsTestnet)
+	pub, err := GetExtPubForP2SHAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -112,7 +112,7 @@ func TestP2WPKHKeyExport(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	priv, err := GetXPrivForP2WPKHAccount(seed, 0, testIsTestnet)
+	priv, err := GetExtPrvForP2WPKHAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -121,7 +121,7 @@ func TestP2WPKHKeyExport(t *testing.T) {
 		t.Errorf("test extended P2WPKH private key export is not expected value want\n%s \ngot \n%s", testP2WPKHPriv, priv)
 	}
 
-	pub, err := GetXPubForP2WPKHAccount(seed, 0, testIsTestnet)
+	pub, err := GetExtPubForP2WPKHAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -146,7 +146,7 @@ func TestP2WPKHAddressGeneration(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	pk, err := GetXPrivForP2WPKHAccount(seed, 0, testIsTestnet)
+	pk, err := GetExtPrvForP2WPKHAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -185,7 +185,7 @@ func TestP2SHAddressGeneration(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	pk, err := GetXPrivForP2SHAccount(seed, 0, testIsTestnet)
+	pk, err := GetExtPrvForP2SHAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -224,7 +224,7 @@ func TestP2PKHAddressGeneration(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	pk, err := GetXPrivForP2PKHAccount(seed, 0, testIsTestnet)
+	pk, err := GetExtPrvForP2PKHAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}

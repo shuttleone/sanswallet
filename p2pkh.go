@@ -32,8 +32,8 @@ var (
 	p2pkhHumanPre = map[string]bool{"xpub": true, "xprv": true}
 )
 
-// GetXPrivForP2PKHAccount returns extended private key for BIP44 P2PKH account
-func GetXPrivForP2PKHAccount(seed []byte, accountIndex int, testnet bool) (string, error) {
+// GetExtPrvForP2PKHAccount returns extended private key for BIP44 P2PKH account
+func GetExtPrvForP2PKHAccount(seed []byte, accountIndex int, testnet bool) (string, error) {
 	index, err := intToUint32(accountIndex)
 	if err != nil {
 		return "", err
@@ -54,8 +54,8 @@ func GetXPrivForP2PKHAccount(seed []byte, accountIndex int, testnet bool) (strin
 	return keys.GetBIP44AccountKey(m, index, true)
 }
 
-// GetXPubForP2PKHAccount returns extended public key for BIP44 P2PKH account
-func GetXPubForP2PKHAccount(seed []byte, accountIndex int, testnet bool) (string, error) {
+// GetExtPubForP2PKHAccount returns extended public key for BIP44 P2PKH account
+func GetExtPubForP2PKHAccount(seed []byte, accountIndex int, testnet bool) (string, error) {
 	index, err := intToUint32(accountIndex)
 	if err != nil {
 		return "", err

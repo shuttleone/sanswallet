@@ -38,8 +38,8 @@ var (
 	p2wpkhHumanPre = map[string]bool{"zpub": true, "zprv": true}
 )
 
-// GetXPrivForP2WPKHAccount returns extended private key for BIP84 P2WPKH account
-func GetXPrivForP2WPKHAccount(seed []byte, accountIndex int, testnet bool) (string, error) {
+// GetExtPrvForP2WPKHAccount returns extended private key for BIP84 P2WPKH account
+func GetExtPrvForP2WPKHAccount(seed []byte, accountIndex int, testnet bool) (string, error) {
 	index, err := intToUint32(accountIndex)
 	if err != nil {
 		return "", err
@@ -63,8 +63,8 @@ func GetXPrivForP2WPKHAccount(seed []byte, accountIndex int, testnet bool) (stri
 	return hdkeychain.VersionedStringFromExtendedKeyString(k, privP2WPKHVer)
 }
 
-// GetXPubForP2WPKHAccount returns extended public key for BIP84 P2WPKH account
-func GetXPubForP2WPKHAccount(seed []byte, accountIndex int, testnet bool) (string, error) {
+// GetExtPubForP2WPKHAccount returns extended public key for BIP84 P2WPKH account
+func GetExtPubForP2WPKHAccount(seed []byte, accountIndex int, testnet bool) (string, error) {
 	index, err := intToUint32(accountIndex)
 	if err != nil {
 		return "", err

@@ -39,8 +39,8 @@ var (
 	p2shHumanPre = map[string]bool{"ypub": true, "yprv": true}
 )
 
-// GetXPrivForP2SHAccount returns extended private key for BIP49 P2SH account
-func GetXPrivForP2SHAccount(seed []byte, accountIndex int, testnet bool) (string, error) {
+// GetExtPrvForP2SHAccount returns extended private key for BIP49 P2SH account
+func GetExtPrvForP2SHAccount(seed []byte, accountIndex int, testnet bool) (string, error) {
 	index, err := intToUint32(accountIndex)
 	if err != nil {
 		return "", err
@@ -64,8 +64,8 @@ func GetXPrivForP2SHAccount(seed []byte, accountIndex int, testnet bool) (string
 	return hdkeychain.VersionedStringFromExtendedKeyString(k, privP2WPKHinP2SHVer)
 }
 
-// GetXPubForP2SHAccount returns extended public key for BIP49 P2SH account
-func GetXPubForP2SHAccount(seed []byte, accountIndex int, testnet bool) (string, error) {
+// GetExtPubForP2SHAccount returns extended public key for BIP49 P2SH account
+func GetExtPubForP2SHAccount(seed []byte, accountIndex int, testnet bool) (string, error) {
 	index, err := intToUint32(accountIndex)
 	if err != nil {
 		return "", err
