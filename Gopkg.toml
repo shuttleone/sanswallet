@@ -2,5 +2,5 @@
 required = ["golang.org/x/mobile/cmd/gomobile"]
 
 [[constraint]]
-name = "github.com/btcsuite/btcutil"
-source = "github.com/SansCentralDev/btcutil.git"
+  name = "github.com/btcsuite/btcutil"
+  source = "github.com/SansCentralDev/btcutil.git"
