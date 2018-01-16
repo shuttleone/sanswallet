@@ -22,10 +22,10 @@ import (
 	"encoding/hex"
 	"errors"
 
-	"github.com/sanscentral/sanswallet/network"
-
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcutil/hdkeychain"
+
+	"github.com/sanscentral/sanswallet/network"
 )
 
 // AddressType used in BIP44
@@ -35,11 +35,17 @@ type AddressType uint32
 const (
 	HardenedKeyZeroIndex = 0x80000000 // 2^31
 
-	// BIP43PurposeConstant is to-be hardened purpose (Full list of coin types available here: https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
-	BIP43PurposeConstant = 44
+	// BIP44Purpose P2PKH purpose
+	BIP44Purpose uint32 = 44
 
-	// BTCCoinType is to-be hardened BIP44 Bitcoin coin type
-	BTCCoinType = 0
+	// BIP44Purpose P2SH purpose
+	BIP49Purpose uint32 = 49
+
+	// BIP44Purpose P2WPKH purpose
+	BIP84Purpose uint32 = 84
+
+	// BTCCoinType (Full list of coin types available here: https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
+	BTCCoinType uint32 = 0
 
 	ExternalAddress AddressType = 0
 	ChangeAddress   AddressType = 1
@@ -65,14 +71,32 @@ func GetExtendedKeyFromString(xKey string) (key *hdkeychain.ExtendedKey, err err
 	return hdkeychain.NewKeyFromString(xKey)
 }
 
-// GetBTCAccountKey retreives bitcoin account key for BIP32 path using BIP44 standard (m / purpose' / coin_type' / --->account'<--- / change / address_index)
-func GetBTCAccountKey(masterKey *hdkeychain.ExtendedKey, accountIndex uint32, includePrivateKey bool) (key string, err error) {
-	purpose, err := masterKey.Child(HardenedKeyZeroIndex + BIP43PurposeConstant)
+// GetBIP84AccountKey retreives BIP49 account key for BIP32 path using BIP44 standard (m / purpose' / coin_type' / --->account'<--- / change / address_index)
+// This is primarily used for P2SH
+func GetBIP84AccountKey(masterKey *hdkeychain.ExtendedKey, accountIndex uint32, includePrivateKey bool) (key string, err error) {
+	return getAccountKeyWithPurpose(masterKey, BIP84Purpose, accountIndex, includePrivateKey)
+}
+
+// GetBIP49AccountKey retreives BIP49 account key for BIP32 path using BIP44 standard (m / purpose' / coin_type' / --->account'<--- / change / address_index)
+// This is primarily used for P2SH
+func GetBIP49AccountKey(masterKey *hdkeychain.ExtendedKey, accountIndex uint32, includePrivateKey bool) (key string, err error) {
+	return getAccountKeyWithPurpose(masterKey, BIP49Purpose, accountIndex, includePrivateKey)
+}
+
+// GetBIP44AccountKey retreives BIP44 account key for BIP32 path using BIP44 standard (m / purpose' / coin_type' / --->account'<--- / change / address_index)
+// This is primarily used for P2PKH
+func GetBIP44AccountKey(masterKey *hdkeychain.ExtendedKey, accountIndex uint32, includePrivateKey bool) (key string, err error) {
+	return getAccountKeyWithPurpose(masterKey, BIP44Purpose, accountIndex, includePrivateKey)
+}
+
+// getAccountKeyWithPurpose retrieves account key with specified BIP32 purpose
+func getAccountKeyWithPurpose(masterKey *hdkeychain.ExtendedKey, purpose uint32, accountIndex uint32, includePrivateKey bool) (key string, err error) {
+	purposeK, err := masterKey.Child(HardenedKeyZeroIndex + purpose)
 	if err != nil {
 		return "", err
 	}
 
-	coinType, err := purpose.Child(HardenedKeyZeroIndex + BTCCoinType)
+	coinType, err := purposeK.Child(HardenedKeyZeroIndex + BTCCoinType)
 	if err != nil {
 		return "", err
 	}
@@ -94,8 +118,8 @@ func GetBTCAccountKey(masterKey *hdkeychain.ExtendedKey, accountIndex uint32, in
 	return pub.String(), nil
 }
 
-// GetBTCAccountAddressKey retreives bitcoin account key for BIP32 path using BIP44 standard (m / purpose' / coin_type' / account' / --->change / address_index <---)
-func GetBTCAccountAddressKey(xKey string, change AddressType, addressIndex uint32) (key *hdkeychain.ExtendedKey, err error) {
+// GetAccountAddressKey retreives key for BIP32 path using BIP44 standard (m / purpose' / coin_type' / account' / --->change / address_index <---)
+func GetAccountAddressKey(xKey string, change AddressType, addressIndex uint32) (key *hdkeychain.ExtendedKey, err error) {
 	account, err := GetExtendedKeyFromString(xKey)
 	if err != nil {
 		return nil, err

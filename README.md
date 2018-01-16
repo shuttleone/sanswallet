@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/sanscentral/sanswallet.svg?branch=master)](https://travis-ci.org/sanscentral/sanswallet)
 
-SansWallet golang library is an implementation of a BIP32 & BIP44 hierarchical determinstic wallet
+SansWallet golang library is an implementation of a BIP32, BIP44, BIP49 and BIP84 compatible hierarchical determinstic wallet
 
 ## Build
 

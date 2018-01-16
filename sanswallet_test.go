@@ -24,55 +24,119 @@ import (
 )
 
 const (
-	// Seed
-	testSeedHex = "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542"
+	// Seed : mnemonic = abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
+	testSeedHex = "5eb00bbddcf069084889a8ab9155568165f5c453ccb85e70811aaed6f6da5fc19a5ac40b389cd370d086206dec8aa6c43daea6690f20ad3d8d48b2d2ce9e38e4"
 
 	// useful Test reference: https://iancoleman.io/bip39/
-	// P2PK
-	testP2PK0  = "148CGtv7bwcC933EHtcDfzDQVneur1R8Y1"
-	testP2PK1  = "1FQEcNEtCxvwonGfPkhPqtV2VvjTjVUPv4"
-	testP2PK10 = "1AatH1T4wHYLLMMZ5qezGL45x2DZVRSyS2"
+	// P2PK BIP44
+	testP2PK0  = "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA"
+	testP2PK1  = "1Ak8PffB2meyfYnbXZR9EGfLfFZVpzJvQP"
+	testP2PK10 = "146emAmGumhnsT9nPCALU2JWeS4koxfFRB"
 
-	// P2SH
-	testP2SH0  = "3Mkk7sXeB9833KdU5yy9Y8Ev88W53c9FEH"
-	testP2SH1  = "3BnbC5t8yMqhi8jhLVH71dW1yCpWoaAZyw"
-	testP2SH10 = "3KPmr5JdcGrKSsBYXghErPDu452Sjyzfnw"
+	testP2PKHPriv = "xprv9xpXFhFpqdQK3TmytPBqXtGSwS3DLjojFhTGht8gwAAii8py5X6pxeBnQ6ehJiyJ6nDjWGJfZ95WxByFXVkDxHXrqu53WCRGypk2ttuqncb"
+	testP2PKHPub  = "xpub6BosfCnifzxcFwrSzQiqu2DBVTshkCXacvNsWGYJVVhhawA7d4R5WSWGFNbi8Aw6ZRc1brxMyWMzG3DSSSSoekkudhUd9yLb6qx39T9nMdj"
 
-	// P2WPKH
-	testP2WPKH0  = "bc1qyfztx0azgwhw8020yekzkl4j4q4ux8t926ft2y"
-	testP2WPKH1  = "bc1qnhmtqhcm3v809let9kl0ps07zq4s2zyx48ulp4"
-	testP2WPKH10 = "bc1qdys6jmjznxucxq6prkefcnuqt3xhk8qgr95ccq"
+	// P2SH BIP49
+	testP2SH0  = "37VucYSaXLCAsxYyAPfbSi9eh4iEcbShgf"
+	testP2SH1  = "3LtMnn87fqUeHBUG414p9CWwnoV6E2pNKS"
+	testP2SH10 = "38mWd5D48ShYPJMZngtmxPQVYhQR5DGgfF"
 
-	// Extended key exports
-	testPrivateKey = "xprv9zBMyndPhLXWLk29RpugWNgciJ3o6eDMDHwg79vPxccrV66XmEiF6x4voGKn3kDTX78Ph5h3PAM7699imc3T8P39qy9y9oi8X37zTEJrTgH"
-	testPublicKey  = "xpub6DAiPJAHXi5oZE6cXrSgsWdMGKtHW6wCaWsGuYL1Wx9qMtRgJn2VekPQeZc1WwAoeuoytGozkCQnToL2PMw4deyhWGEu7Xou6gPYc1KqYuj"
+	testP2SHPriv = "yprvAHwhK6RbpuS3dgCYHM5jc2ZvEKd7Bi61u9FVhYMpgMSuZS613T1xxQeKTffhrHY79hZ5PsskBjcc6C2V7DrnsMsNaGDaWev3GLRQRgV7hxF"
+	testP2SHPub  = "ypub6Ww3ibxVfGzLrAH1PNcjyAWenMTbbAosGNB6VvmSEgytSER9azLDWCxoJwW7Ke7icmizBMXrzBx9979FfaHxHcrArf3zbeJJJUZPf663zsP"
+
+	// P2WPKH BIP84
+	testP2WPKH0  = "bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu"
+	testP2WPKH1  = "bc1qnjg0jd8228aq7egyzacy8cys3knf9xvrerkf9g"
+	testP2WPKH10 = "bc1qd30z5a5e50jtgx28rvt64483tq65r9pkj623wh"
+
+	testP2WPKHPriv = "zprvAdG4iTXWBoARxkkzNpNh8r6Qag3irQB8PzEMkAFeTRXxHpbF9z4QgEvBRmfvqWvGp42t42nvgGpNgYSJA9iefm1yYNZKEm7z6qUWCroSQnE"
+	testP2WPKHPub  = "zpub6rFR7y4Q2AijBEqTUquhVz398htDFrtymD9xYYfG1m4wAcvPhXNfE3EfH1r1ADqtfSdVCToUG868RvUUkgDKf31mGDtKsAYz2oz2AGutZYs"
 
 	testIsChangeAddress = false
 	testIsTestnet       = false
 )
 
-func TestKeyExport(t *testing.T) {
+func TestP2PKHKeyExport(t *testing.T) {
 	seed, err := hex.DecodeString(testSeedHex)
 	if err != nil {
 		t.Error(err.Error())
 	}
 
-	priv, err := GetXPrivForAccount(seed, 0, testIsTestnet)
+	priv, err := GetXPrivForP2PKHAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
 
-	if priv != testPrivateKey {
-		t.Errorf("test extended private key export is not expected value want %s got %s", testPrivateKey, priv)
+	if priv != testP2PKHPriv {
+		t.Errorf("test extended P2PKH private key export is not expected value want\n%s \ngot \n%s", testP2PKHPriv, priv)
 	}
 
-	pub, err := GetXPubKeyForAccount(seed, 0, testIsTestnet)
+	pub, err := GetXPubForP2PKHAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
 
-	if pub != testPublicKey {
-		t.Errorf("test extended public key export is not expected value want %s got %s", testPublicKey, pub)
+	if pub != testP2PKHPub {
+		t.Errorf("test extended P2PKH public key export is not expected value want\n%s \ngot \n%s", testP2PKHPub, pub)
+	}
+}
+
+func TestP2SHKeyExport(t *testing.T) {
+	seed, err := hex.DecodeString(testSeedHex)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	priv, err := GetXPrivForP2SHAccount(seed, 0, testIsTestnet)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if priv != testP2SHPriv {
+		t.Errorf("test extended P2SH private key export is not expected value want\n%s \ngot \n%s", testP2SHPriv, priv)
+	}
+
+	pub, err := GetXPubForP2SHAccount(seed, 0, testIsTestnet)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if pub != testP2SHPub {
+		t.Errorf("test extended P2SH public key export is not expected value want\n%s \ngot \n%s", testP2SHPub, pub)
+	}
+}
+
+func TestP2WPKHKeyExport(t *testing.T) {
+	seed, err := hex.DecodeString(testSeedHex)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	priv, err := GetXPrivForP2WPKHAccount(seed, 0, testIsTestnet)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if priv != testP2WPKHPriv {
+		t.Errorf("test extended P2WPKH private key export is not expected value want\n%s \ngot \n%s", testP2WPKHPriv, priv)
+	}
+
+	pub, err := GetXPubForP2WPKHAccount(seed, 0, testIsTestnet)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if pub != testP2WPKHPub {
+		t.Errorf("test extended P2WPKH public key export is not expected value want\n%s \ngot \n%s", testP2WPKHPub, pub)
+	}
+
+	np, err := GetP2WPKHAddressForIndex(pub, 0, false, false)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if np != testP2WPKH0 {
+		t.Errorf("test extended P2WPKH public key did not result in expected address")
 	}
 }
 
@@ -82,7 +146,7 @@ func TestP2WPKHAddressGeneration(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	pk, err := GetXPrivForAccount(seed, 0, testIsTestnet)
+	pk, err := GetXPrivForP2WPKHAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -121,7 +185,7 @@ func TestP2SHAddressGeneration(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	pk, err := GetXPrivForAccount(seed, 0, testIsTestnet)
+	pk, err := GetXPrivForP2SHAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -160,7 +224,7 @@ func TestP2PKHAddressGeneration(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	pk, err := GetXPrivForAccount(seed, 0, testIsTestnet)
+	pk, err := GetXPrivForP2PKHAccount(seed, 0, testIsTestnet)
 	if err != nil {
 		t.Error(err.Error())
 	}
