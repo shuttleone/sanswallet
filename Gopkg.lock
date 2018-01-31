@@ -14,10 +14,10 @@
   revision = "2efee857e7cfd4f3d0138cc3cbb1b4966962b93a"
 
 [[projects]]
+  branch = "master"
   name = "github.com/btcsuite/btcd"
-  packages = ["btcec","chaincfg","txscript","wire"]
-  revision = "cea5d3c1cc16eb07a1686c557db23004655ae11b"
-  version = "BTCD_0_12_0_BETA"
+  packages = ["btcec","chaincfg","chaincfg/chainhash","txscript","wire"]
+  revision = "50de9da05b50eb15658bb350f6ea24368a111ab7"
 
 [[projects]]
   branch = "master"
@@ -26,23 +26,17 @@
   revision = "84c8d2346e9fc8c7b947e243b9c24e6df9fd206a"
 
 [[projects]]
+  branch = "master"
   name = "github.com/btcsuite/btcutil"
-  packages = [".","base58","hdkeychain"]
-  revision = "ff82dacded1c76d101bce55c394c03c0bbff69e8"
+  packages = [".","base58","bech32","hdkeychain"]
+  revision = "8f0227d09645f436abf2a477a893a02925ee77fb"
   source = "github.com/SansCentralDev/btcutil.git"
-  version = "BTCUTIL_0_5_0"
 
 [[projects]]
   branch = "master"
-  name = "github.com/btcsuite/fastsha256"
-  packages = ["."]
-  revision = "637e656429416087660c84436a2a035d69d54e2e"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/btcsuite/golangcrypto"
+  name = "golang.org/x/crypto"
   packages = ["ripemd160"]
-  revision = "53f62d9b43e87a6c56975cf862af7edf33a8d0df"
+  revision = "1875d0a70c90e57f11972aefd42276df65e895b9"
 
 [[projects]]
   branch = "master"
@@ -59,6 +53,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cbd61f94440eca6212673e04b6626e20326eae9c5bcd9dd04719656e3721cf32"
+  inputs-digest = "ce2f0d301a1e1f711442781c0605aa80127833023650a068fec40992c6065fae"
   solver-name = "gps-cdcl"
   solver-version = 1

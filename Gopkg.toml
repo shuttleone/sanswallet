@@ -4,12 +4,3 @@ required = ["golang.org/x/mobile/cmd/gomobile"]
 [[constraint]]
  name = "github.com/btcsuite/btcutil"
  source = "github.com/SansCentralDev/btcutil.git"
-
-[[constraint]]
- name = "github.com/btcsuite/btcd"
- version = "BTCD_0_12_0_BETA"
-
-[[constraint]]
- name = "github.com/btcsuite/btclog"
- version = "BTCLOG_0_0_3"
- 
