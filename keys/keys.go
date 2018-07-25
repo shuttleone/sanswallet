@@ -38,10 +38,10 @@ const (
 	// BIP44Purpose P2PKH purpose
 	BIP44Purpose uint32 = 44
 
-	// BIP44Purpose P2SH purpose
+	// BIP49Purpose P2SH purpose
 	BIP49Purpose uint32 = 49
 
-	// BIP44Purpose P2WPKH purpose
+	// BIP84Purpose P2WPKH purpose
 	BIP84Purpose uint32 = 84
 
 	// BTCCoinType (Full list of coin types available here: https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
